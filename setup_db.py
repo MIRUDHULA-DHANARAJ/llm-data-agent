@@ -2,9 +2,17 @@ import sqlite3
 import pandas as pd
 from datetime import datetime, timedelta
 import random
+import os  # <-- Add this import at the top
 
 def init_db():
-    conn = sqlite3.connect("ecommerce.db")
+    DB_NAME = "ecommerce.db"
+    
+    # FIX: If an old database exists, delete it to prevent unique ID collision crashes
+    if os.path.exists(DB_NAME):
+        os.remove(DB_NAME)
+        print("Cleared out older database file successfully.")
+
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
     # 1. Create Users Table
@@ -78,7 +86,7 @@ def init_db():
 
     conn.commit()
     conn.close()
-    print("Database built successfully with mock relational data!")
+    print("Database built successfully with fresh relational data!")
 
 if __name__ == "__main__":
     init_db()
