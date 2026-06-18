@@ -1,14 +1,18 @@
 # ⚡ InsightCore AI: Autonomous Data Analyst Agent
 An enterprise-grade, multi-agent analytical system that translates natural language business queries into deterministic SQL and Python code execution loops over relational databases.
 
+
 <br>
 
-- **Core Engine:** ![Python](https://shields.io)
-- **State Machine Framework:** ![LangGraph](https://shields.io)
-- **LLM Engine:** ![Groq](https://shields.io)
-- **Web UI Layout:** ![Streamlit](https://shields.io)
-- **Container Environment:** ![Docker](https://shields.io)
-- **Database Store:** ![SQLite](https://shields.io)
+### 🛠️ Core Technology Blueprint
+- 🐍 **Core Engine:** `Python 3.11`
+- 🦜 **State Machine Framework:** `LangGraph ReAct`
+- 🚀 **LLM Gateway Engine:** `Groq Cloud` (`llama-3.3-70b-versatile`)
+- 📊 **Web UI Analytics Portal:** `Streamlit Ecosystem`
+- 🐳 **Deployment Container:** `Docker Architecture`
+- 🗄️ **Relational Store Layer:** `SQLite Database`
+
+
 
 ---
 
