@@ -4,8 +4,6 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
-
-# Update this specific import line:
 from db_tools import get_db_schema, run_sql_query, python_sandbox
 
 # Initialize the model
@@ -19,7 +17,6 @@ llm = ChatGroq(
 tools = [get_db_schema, run_sql_query, python_sandbox]
 llm_with_tools = llm.bind_tools(tools)
 
-# ... (rest of your agent.py code remains exactly the same)
 
 
 # 2. Define the shared Agent State structure
