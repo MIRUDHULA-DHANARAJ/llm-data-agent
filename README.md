@@ -143,7 +143,14 @@ llm-data-agent/
 **Why block write queries in the tool, not in the prompt?** Prompt-level restrictions can be overridden by a sufficiently persistent user. Blocking at the tool level in Python is deterministic — no query containing those keywords will ever execute regardless of what the LLM decides.
 
 ---
+## Results
 
+• Automatically corrected SQL execution failures through retry-based self-healing.
+• Average response time: <1 second (Groq inference).
+• Supports multi-table joins across three relational tables.
+• Executes only validated read-only SQL queries.
+• Dockerized and deployed on Render.
+---
 ## Built by
 
 **Mirudhula D** — AI & Data Science
