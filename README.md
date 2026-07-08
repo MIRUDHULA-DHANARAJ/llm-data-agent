@@ -1,4 +1,4 @@
-# InsightCore AI — Autonomous Data Analyst Agent
+# InsightCore AI — Natural Language SQL Agent
 
 An AI agent that answers natural language questions about a database by autonomously writing and executing SQL queries, running Python calculations, and rendering results with charts — no manual query writing needed.
 
@@ -150,13 +150,13 @@ llm-data-agent/
 
 ---
 ## Results
-
+```
 Automatically corrected SQL execution failures through retry-based self-healing.
 Average response time: <1 second (Groq inference).
 Supports multi-table joins across three relational tables.
 Executes only validated read-only SQL queries.
 Dockerized and deployed on Render.
----
+```
 ## Built by
 
 **Mirudhula D** — AI & Data Science
