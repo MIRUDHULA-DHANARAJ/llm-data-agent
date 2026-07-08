@@ -34,6 +34,12 @@ The agent is built on a **LangGraph stateful execution graph** — not a simple 
 [ User Question ]
        │
        ▼
+   Streamlit UI
+       │
+       ▼
+   FastAPI
+       │
+       ▼
  ┌───────────┐
  │ Agent     │ ◀─────────────────────┐
  │ (LLM)    │                       │
@@ -145,11 +151,11 @@ llm-data-agent/
 ---
 ## Results
 
-• Automatically corrected SQL execution failures through retry-based self-healing.
-• Average response time: <1 second (Groq inference).
-• Supports multi-table joins across three relational tables.
-• Executes only validated read-only SQL queries.
-• Dockerized and deployed on Render.
+Automatically corrected SQL execution failures through retry-based self-healing.
+Average response time: <1 second (Groq inference).
+Supports multi-table joins across three relational tables.
+Executes only validated read-only SQL queries.
+Dockerized and deployed on Render.
 ---
 ## Built by
 
