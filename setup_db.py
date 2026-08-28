@@ -1,8 +1,8 @@
+import os  
 import sqlite3
 import pandas as pd
 from datetime import datetime, timedelta
 import random
-import os  # <-- Add this import at the top
 
 def init_db():
     DB_NAME = "ecommerce.db"
