@@ -8,7 +8,7 @@ from db_tools import get_db_schema, run_sql_query, python_sandbox
 
 # Initialize the model
 llm = ChatGroq(
-    model="openai/gpt-oss-120b"
+    model="openai/gpt-oss-120b",
     temperature=0.0,
     groq_api_key=os.environ.get("GROQ_API_KEY")
 )
