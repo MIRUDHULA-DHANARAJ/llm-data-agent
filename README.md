@@ -2,8 +2,7 @@
 
 An AI agent that answers natural language questions about a database by autonomously writing and executing SQL queries, running Python calculations, and rendering results with charts — no manual query writing needed.
 
-**Live demo:** [llm-data-agent.onrender.com](https://llm-data-agent.onrender.com)
-> ⚠️ Hosted on Render free tier — first load may take 30–60 seconds to wake up.
+**Live demo:** [llm-data-agent.onrender.com](https://llm-data-agent-app.streamlit.app/)
 
 ---
 
