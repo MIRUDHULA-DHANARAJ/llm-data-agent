@@ -1,5 +1,10 @@
-langchain
-langchain-groq
-langgraph
-streamlit
-pandas
+fastapi==0.115.0
+uvicorn==0.30.6
+langgraph==0.2.20
+langchain-core==0.3.0
+langchain-groq==0.2.0
+groq==0.11.0
+pydantic==2.9.2
+pydantic-settings==2.5.0
+python-dotenv==1.0.1
+sqlglot==25.26.0

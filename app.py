@@ -1,151 +1,129 @@
+import os
 import streamlit as st
 import pandas as pd
 from langchain_core.messages import HumanMessage
-from agent import app
 
-# Page configuration for a premium enterprise feel
+from app.graph import app as workflow_app
+from app.database import init_db
+
+# Page configuration for a professional enterprise feel
 st.set_page_config(
-    page_title="InsightCore AI | Autonomous Analyst", 
-    page_icon="⚡", 
+    page_title="Autonomous SQL Agent | LangGraph",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom Enterprise Global CSS styling
+# Initialize database on app load
+init_db()
+
+# Custom CSS for high-contrast dark theme styling
 st.markdown("""
     <style>
-        /* Base app background tuning */
         .block-container { padding-top: 2rem; padding-bottom: 2rem; }
-        
-        /* Metric Card styling */
         .metric-card {
             background-color: #1E293B;
             border: 1px solid #334155;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1.2rem;
+            border-radius: 10px;
             margin-bottom: 1rem;
         }
-        .metric-label { font-size: 0.85rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-        .metric-value { font-size: 1.8rem; color: #F8FAFC; font-weight: 700; margin-top: 0.25rem; }
-        
-        /* Header typography adjustments */
-        .main-title { font-size: 2.5rem; font-weight: 800; color: #F1F5F9; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
-        .sub-title { font-size: 1.1rem; color: #94A3B8; margin-bottom: 2rem; }
+        .metric-label { font-size: 0.8rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; }
+        .metric-value { font-size: 1.5rem; color: #F8FAFC; font-weight: 700; margin-top: 0.2rem; }
+        .main-title { font-size: 2.2rem; font-weight: 800; color: #F1F5F9; letter-spacing: -0.02em; }
+        .sub-title { font-size: 1rem; color: #94A3B8; margin-bottom: 1.5rem; }
     </style>
 """, unsafe_allow_html=True)
 
 # --- SIDEBAR CONTROL PANEL ---
 with st.sidebar:
-    st.markdown("<h2 style='color: #F1F5F9; font-size: 1.5rem; font-weight: 700;'>⚡ InsightCore Engine</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94A3B8; font-size: 0.85rem;'>Enterprise Multi-Agent Runtime Environment</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #F1F5F9; font-size: 1.4rem;'>⚡ Agent Control Panel</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94A3B8; font-size: 0.8rem;'>LangGraph + Groq Llama 3.3 70B</p>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # Live System Status Dashboard
-    st.markdown("**Core Architecture Status:**")
-    st.success("🟢 LLM Gateway: Connected")
-    st.success("🟢 Graph Routing: Active")
-    st.success("🟢 DB Sandbox: Isolated (Read-Only)")
+    st.markdown("**System Health:**")
+    st.success("🟢 Groq LLM Gateway: Online")
+    st.success("🟢 AST Guardrail: Active")
+    st.success("🟢 SQLite Sandbox: Connected")
     
     st.markdown("---")
-    st.markdown("**⚡ Quick Prompt Templates:**")
-    st.caption("Copy and paste these into the prompt analyzer:")
-    st.info("• Give me a breakdown of total sales revenue per product category\n\n"
-            "• Which city has the highest number of users?\n\n"
-            "• What is our most expensive item and how many times was it purchased?")
+    st.markdown("**💡 Quick Prompt Examples:**")
+    st.info(
+        "• Give me total sales revenue per product category\n\n"
+        "• Which city has the highest number of registered users?\n\n"
+        "• What are the top 3 most expensive products sold?"
+    )
 
-# --- MAIN SCREEN INTERFACE ---
-st.markdown("<h1 class='main-title'>⚡ InsightCore Autonomous Data Agent</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-title'>Translate complex enterprise natural language questions into deterministic SQL & execution logic trajectories instantly.</p>", unsafe_allow_html=True)
+# --- MAIN INTERFACE ---
+st.markdown("<h1 class='main-title'>⚡ Autonomous Agentic AI & LLM Core Framework</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sub-title'>Translate natural language into secure, self-healing SQLite queries with real-time AST validation and Groq inference.</p>", unsafe_allow_html=True)
 
-# High-Level Real-time System KPI Metrics Grid Panel
+# KPI Metrics Row
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.markdown("<div class='metric-card'><div class='metric-label'>Connected Store Layer</div><div class='metric-value'>SQLite Sandbox</div></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-card'><div class='metric-label'>Inference Engine</div><div class='metric-value'>Llama 3.3 70B</div></div>", unsafe_allow_html=True)
 with col2:
-    st.markdown("<div class='metric-card'><div class='metric-label'>Inference Gateway</div><div class='metric-value'>Groq Cloud v3</div></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-card'><div class='metric-label'>Security Guardrail</div><div class='metric-value'>sqlglot AST</div></div>", unsafe_allow_html=True)
 with col3:
-    st.markdown("<div class='metric-card'><div class='metric-label'>Agent Loop Protocol</div><div class='metric-value'>LangGraph ReAct</div></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-card'><div class='metric-label'>Error Correction</div><div class='metric-value'>Self-Healing Loop</div></div>", unsafe_allow_html=True)
 
-# Clean, structured search panel layout
-st.markdown("<h3 style='font-size: 1.25rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.5rem;'>🎯 Natural Language Query Analyzer</h3>", unsafe_allow_html=True)
-user_query = st.text_input("Ask a question about your database", placeholder="e.g., Calculate total revenue metrics across all successful electronics transactions...", label_visibility="collapsed")
+# Query Input
+st.markdown("### 🎯 Natural Language Query Analyzer")
+user_query = st.text_input("Ask a question about your database:", placeholder="e.g., Show me all orders placed by users from Mumbai...")
 
 if user_query:
     st.markdown("---")
-    # Modernized streaming visualization area splitting thought paths from the solution grid
-    trace_col, display_col = st.columns([1, 1.2])
     
+    # Two-column layout: Left for agent trace, Right for final output & tables
+    trace_col, result_col = st.columns([1, 1.2])
+
     with trace_col:
-        st.markdown("<h4 style='font-size: 1.1rem; font-weight: 600; color: #94A3B8;'>🧠 Real-Time Compilation Trace</h4>", unsafe_allow_html=True)
-        trace_placeholder = st.container()
-        
-    with display_col:
-        st.markdown("<h4 style='font-size: 1.1rem; font-weight: 600; color: #94A3B8;'>🎯 Output Matrix & Visualizations</h4>", unsafe_allow_html=True)
-        output_placeholder = st.container()
+        st.markdown("#### 🧠 Execution & Self-Healing Trace")
+        trace_container = st.container()
 
-    with st.spinner("Processing execution trajectory..."):
-        events = app.stream({"messages": [HumanMessage(content=user_query)]})
-        last_sql_content = None
+    with result_col:
+        st.markdown("#### 📊 Query Results & Data Matrix")
+        result_container = st.container()
 
-        for event in events:
-            for node, output in event.items():
+    with st.spinner("Running autonomous agent loop..."):
+        initial_state = {
+            "user_query": user_query,
+            "sql_query": None,
+            "validation_passed": True,
+            "validation_error": None,
+            "execution_result": None,
+            "error": None,
+            "retry_count": 0
+        }
+
+        # Invoke the LangGraph workflow directly
+        final_state = workflow_app.invoke(initial_state)
+
+        # Render Trace Log
+        with trace_container:
+            st.code(f"Generated SQL:\n{final_state.get('sql_query')}", language="sql")
+            st.metric("Self-Healing Retries", final_state.get('retry_count', 0))
+            
+            if final_state.get('validation_error'):
+                st.error(f"Validation Error Blocked: {final_state['validation_error']}")
+            if final_state.get('error'):
+                st.warning(f"Runtime Exception Handled: {final_state['error']}")
+
+        # Render Results Data Grid
+        with result_container:
+            exec_res = final_state.get("execution_result")
+            if exec_res and isinstance(exec_res, list) and len(exec_res) > 0:
+                df = pd.DataFrame(exec_res)
+                st.dataframe(df, use_container_width=True)
                 
-                # 1. Render execution step diagnostics into the Trace column
-                if node == "tools":
-                    for msg in output.get("messages", []):
-                        with trace_placeholder.expander(f"🛠️ System Module Triggered: {msg.name}", expanded=True):
-                            st.markdown("<p style='font-size:0.8rem; color:#94A3B8;'>RAW SYSTEM FRAME DATA:</p>", unsafe_allow_html=True)
-                            st.code(msg.content, language="text")
-                            
-                        # Capture raw SQL tabular string outputs for extraction later
-                        if msg.name == "run_sql_query" and "Error" not in msg.content and "returned no results" not in msg.content:
-                            last_sql_content = msg.content
-                                
-                elif node == "agent":
-                    for msg in output.get("messages", []):
-                        if hasattr(msg, 'tool_calls') and msg.tool_calls:
-                            for tool_call in msg.tool_calls:
-                                t_name = tool_call.get('name')
-                                t_args = tool_call.get('args', {})
-                                
-                                with trace_placeholder.expander(f"🧠 Routing Decision -> {t_name}", expanded=True):
-                                    if 'query' in t_args:
-                                        st.code(t_args['query'], language="sql")
-                                    elif 'code' in t_args:
-                                        st.code(t_args['code'], language="python")
-                                        
-                        # 2. Render final analytical compilation blocks into the Display column
-                        elif msg.content:
-                            with output_placeholder:
-                                st.markdown("<div style='background-color: #064E3B; border: 1px solid #059669; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;'>", unsafe_allow_html=True)
-                                st.markdown("<h5 style='margin:0 0 0.5rem 0; color:#A7F3D0; font-size:1.1rem; font-weight:700;'>📝 System Insights Synthesis</h5>", unsafe_allow_html=True)
-                                st.write(msg.content)
-                                st.markdown("</div>", unsafe_allow_html=True)
-                                
-                                # --- UPGRADED AUTO-CHART DETECTOR ENGINE ---
-                                if last_sql_content is not None:
-                                    st.markdown("<div style='background-color: #0F172A; border: 1px solid #1E293B; padding: 1.5rem; border-radius: 12px;'>", unsafe_allow_html=True)
-                                    st.markdown("<h5 style='margin:0 0 1rem 0; color:#F1F5F9; font-size:1rem; font-weight:600;'>📈 Interactive Analytical Chart View</h5>", unsafe_allow_html=True)
-                                    try:
-                                        from io import StringIO
-                                        raw_string_data = StringIO(last_sql_content.strip())
-                                        
-                                        # Parse arbitrary white-space tabular layouts cleanly
-                                        chart_df = pd.read_csv(raw_string_data, sep=r'\s{2,}', engine='python')
-                                        
-                                        if len(chart_df) >= 1 and len(chart_df.columns) >= 2:
-                                            x_axis = chart_df.columns[0]
-                                            y_axis = chart_df.columns[1]
-                                            
-                                            # Clean formatting string symbols and force numeric compliance
-                                            chart_df[y_axis] = chart_df[y_axis].astype(str).str.replace(r'[^\d\.]', '', regex=True)
-                                            chart_df[y_axis] = pd.to_numeric(chart_df[y_axis], errors='coerce')
-                                            
-                                            # Generate clean native chart component
-                                            st.bar_chart(data=chart_df, x=x_axis, y=y_axis)
-                                        else:
-                                            st.info("Single metrics cell layout detected. Graphical matrix omitted.")
-                                    except Exception as chart_err:
-                                        st.info(f"Visual chart skipped: {str(chart_err)}")
-                                    st.markdown("</div>", unsafe_allow_html=True)
+                # Auto-chart if numeric columns exist
+                if len(df.columns) >= 2 and len(df) > 1:
+                    try:
+                        x_col, y_col = df.columns[0], df.columns[1]
+                        df[y_col] = pd.to_numeric(df[y_col], errors='coerce')
+                        if df[y_col].notnull().all():
+                            st.bar_chart(df.set_index(x_col)[y_col])
+                    except Exception:
+                        pass
+            else:
+                st.info("Query returned no records or execution failed.")
