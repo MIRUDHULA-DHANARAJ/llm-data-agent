@@ -1,163 +1,117 @@
-# InsightCore AI — Natural Language SQL Agent
+# ⚡ Autonomous Text-to-SQL Agent
 
-An AI agent that answers natural language questions about a database by autonomously writing and executing SQL queries, running Python calculations, and rendering results with charts — no manual query writing needed.
+Ask questions about your database in plain English. The agent writes the SQL, checks it for safety, runs it, and fixes its own mistakes.
 
-**Live demo:** [llm-data-agent.onrender.com](https://llm-data-agent-app.streamlit.app/)
-
----
-
-## What it does
-
-You type a question in plain English. The agent figures out how to answer it by:
-
-1. Inspecting the database schema to understand what tables and columns exist
-2. Writing and executing a SQL query to retrieve the relevant data
-3. Running Python calculations if further processing is needed
-4. Returning a clear answer with an auto-generated bar chart where applicable
-
-The agent's full reasoning trace — every tool call, every SQL query it wrote, every decision — is visible in the UI alongside the final answer.
-
-**Example questions you can ask:**
-- *Which city has the highest number of users?*
-- *What is the total revenue per product category?*
-- *Which product was purchased the most times?*
-- *What is the average order value across all transactions?*
+Built with **LangGraph**, **Groq**, **FastAPI**, **Streamlit** and **SQLite**.
 
 ---
+#
+Live Demo: [LLM AGENT APP](https://llm-data-agent-app.streamlit.app/)
 
-## Architecture
+## 🤔 Why this project?
 
-The agent is built on a **LangGraph stateful execution graph** — not a simple linear chain. This means it can loop back, self-correct on SQL errors, and handle multi-step reasoning without breaking.
+Most people don't know SQL, so they depend on analysts to get answers from data. This agent lets anyone ask *"Which city has the most users?"* and get the answer instantly.
+
+## ✨ Features
+
+- **Natural language → SQL** using an LLM (Groq)
+- **Safety guardrail**: every query is parsed with `sqlglot`, and anything other than `SELECT` (DROP, DELETE, UPDATE, INSERT, ALTER, TRUNCATE) is blocked
+- **Self-healing loop**: if a query fails, the error is sent back to the LLM to fix (max 3 attempts)
+- **Streamlit dashboard** with SQL trace, retry count, results table and auto bar chart
+- **FastAPI endpoint** so other apps can use the agent
+
+## 🧠 How it works
 
 ```
-[ User Question ]
-       │
-       ▼
-   Streamlit UI
-       │
-       ▼
-   FastAPI
-       │
-       ▼
- ┌───────────┐
- │ Agent     │ ◀─────────────────────┐
- │ (LLM)    │                       │
- └───────────┘                       │  (self-correction loop)
-       │                             │
-  tool needed?                       │
-    /      \                         │
-  yes       no → return answer       │
-   │                                 │
-   ▼                                 │
-┌──────────────────────────────┐     │
-│  Tool Node                   │─────┘
-│  ├── get_db_schema()         │
-│  ├── run_sql_query()         │
-│  └── python_sandbox()        │
-└──────────────────────────────┘
+Question → generate SQL → validate (AST check) → execute → result
+               ▲                 │ fail              │ error
+               └─────────────────┴───────────────────┘
+                          retry (max 3 times)
 ```
 
-The agent always calls `get_db_schema` first, then writes SQL based on actual column names — preventing hallucinated column errors. If a query fails, the error is fed back into the LLM context and the agent rewrites the query automatically.
+| Step | What it does |
+|------|--------------|
+| **generate** | LLM gets the DB schema + your question and writes a SQLite query |
+| **validate** | `sqlglot` blocks anything that isn't a read-only SELECT |
+| **execute** | Runs the query on SQLite and returns the rows |
+| **retry** | On failure, LangGraph loops back to *generate* with the error |
 
----
+## 🗂️ Project structure
 
-## Tech stack
+```
+├── app/
+│   ├── database.py     # creates mock e-commerce DB + reads schema
+│   ├── graph.py        # LangGraph workflow (generate → validate → execute)
+│   ├── guardrails.py   # sqlglot safety check
+│   ├── state.py        # shared agent state
+│   └── main.py         # FastAPI app
+├── streamlit_app.py    # Streamlit UI
+├── requirements.txt
+└── .env
+```
 
-| Layer | Technology |
-|---|---|
-| Agent framework | LangGraph + LangChain Core |
-| LLM | Groq Cloud — `llama-3.3-70b-versatile` (free tier) |
-| Tools | Custom `@tool` functions: schema inspector, SQL executor, Python sandbox |
-| Database | SQLite — mock Indian e-commerce data (users, orders, order_items) |
-| Frontend | Streamlit — live reasoning trace + auto bar chart |
-| Deployment | Docker + Render |
+## 🚀 Getting started
 
----
-
-## Database schema
-
-Three tables modelling an Indian e-commerce store:
-
-- **users** — user_id, name, city, signup_date
-- **orders** — order_id, user_id, product, category, amount, status, order_date
-- **order_items** — item_id, order_id, product_name, quantity, unit_price
-
----
-
-## Tools
-
-**`get_db_schema()`** — returns table names, column names, and types. The agent calls this first on every query before writing any SQL.
-
-**`run_sql_query(query)`** — executes a read-only SQL query against the SQLite database. Blocks any query containing `DELETE`, `DROP`, `UPDATE`, `INSERT`, or `ALTER` before execution.
-
-**`python_sandbox(code)`** — runs Python code with pandas available for calculations that SQL can't handle cleanly (e.g. percentage calculations, multi-step aggregations). Stdout is captured and returned to the agent.
-
----
-
-## Run locally
-
-**Prerequisites:** Python 3.11+, a free [Groq API key](https://console.groq.com)
+**1. Clone and install**
 
 ```bash
-git clone https://github.com/MIRUDHULA-DHANARAJ/llm-data-agent
-cd llm-data-agent
-
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-
+git clone <your-repo-url>
+cd <your-repo-name>
 pip install -r requirements.txt
-
-python setup_db.py              # creates ecommerce.db with sample data
-
-export GROQ_API_KEY=gsk_...     # Windows: set GROQ_API_KEY=gsk_...
-
-streamlit run app.py
 ```
 
-**With Docker:**
+**2. Add your Groq API key**
+
+Create a `.env` file:
+
+```
+GROQ_API_KEY=your_key_here
+```
+
+**3. Run the Streamlit app**
 
 ```bash
-docker build -t insightcore-agent .
-docker run -p 8501:8501 -e GROQ_API_KEY=gsk_... insightcore-agent
-# open http://localhost:8501
+streamlit run streamlit_app.py
 ```
+
+**4. Or run the API**
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Then open `http://localhost:8000/docs` to try it.
+
+## 📡 API
+
+**POST** `/query`
+
+```json
+{ "query": "Total sales revenue per product category" }
+```
+
+Returns the generated SQL, results, retry count and any errors. There's also a `GET /health` check.
+
+## 🗃️ Sample data
+
+On first run, a mock e-commerce database is created automatically:
+
+- `users` (50 rows)
+- `orders` (120 rows)
+- `order_items` (products, categories, prices, quantities)
+
+## 💬 Try these questions
+
+- Give me total sales revenue per product category
+- Which city has the highest number of registered users?
+- What are the top 3 most expensive products sold?
+
+
+
+## 🛠️ Tech stack
+
+LangGraph · LangChain · Groq · FastAPI · Streamlit · SQLite · pandas · sqlglot
 
 ---
 
-## Project structure
-
-```
-llm-data-agent/
-├── agent.py          # LangGraph state machine — agent node, tool node, routing logic
-├── db_tools.py       # Three LangChain tools: schema, SQL, Python sandbox
-├── app.py            # Streamlit UI — query input, reasoning trace, chart output
-├── setup_db.py       # Creates and seeds ecommerce.db
-├── ecommerce.db      # SQLite database
-├── Dockerfile
-└── requirements.txt
-```
-
----
-
-## Key design decisions
-
-**Why LangGraph instead of AgentExecutor?** LangGraph gives explicit control over the execution loop as a typed state machine. The self-correction behaviour (SQL error → rewrite → retry) is a real conditional edge in the graph, not a hidden retry inside a black-box executor.
-
-**Why Groq?** Sub-second inference on `llama-3.3-70b-versatile` at zero cost on the free tier. The 70B model handles structured tool-calling reliably enough for production-quality SQL generation.
-
-**Why block write queries in the tool, not in the prompt?** Prompt-level restrictions can be overridden by a sufficiently persistent user. Blocking at the tool level in Python is deterministic — no query containing those keywords will ever execute regardless of what the LLM decides.
-
----
-## Results
-```
-Automatically corrected SQL execution failures through retry-based self-healing.
-Average response time: <1 second (Groq inference).
-Supports multi-table joins across three relational tables.
-Executes only validated read-only SQL queries.
-Dockerized and deployed on Render.
-```
-## Built by
-
-**Mirudhula D** — AI & Data Science
-
-[LinkedIn](https://linkedin.com/in/mirudhula-dhanaraj) · [GitHub](https://github.com/MIRUDHULA-DHANARAJ) · [Email](mailto:mirudhula.d534@gmail.com)
+Made by **Mirudhula D**
