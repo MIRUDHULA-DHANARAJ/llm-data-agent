@@ -38,7 +38,7 @@ st.markdown("""
 # --- SIDEBAR CONTROL PANEL ---
 with st.sidebar:
     st.markdown("<h2 style='color: #F1F5F9; font-size: 1.4rem;'>⚡ Agent Control Panel</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94A3B8; font-size: 0.8rem;'>LangGraph + Groq Llama 3.3 70B</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94A3B8; font-size: 0.8rem;'>LangGraph + gpt-oss-120b</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     st.markdown("**System Health:**")
@@ -61,7 +61,7 @@ st.markdown("<p class='sub-title'>Translate natural language into secure, self-h
 # KPI Metrics Row
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.markdown("<div class='metric-card'><div class='metric-label'>Inference Engine</div><div class='metric-value'>Llama 3.3 70B</div></div>", unsafe_allow_html=True)
+    st.markdown("<div class='metric-card'><div class='metric-label'>Inference Engine</div><div class='metric-value'>gpt-oss-120b</div></div>", unsafe_allow_html=True)
 with col2:
     st.markdown("<div class='metric-card'><div class='metric-label'>Security Guardrail</div><div class='metric-value'>sqlglot AST</div></div>", unsafe_allow_html=True)
 with col3:
