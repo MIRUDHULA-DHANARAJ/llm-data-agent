@@ -55,8 +55,8 @@ Question → generate SQL → validate (AST check) → execute → result
 **1. Clone and install**
 
 ```bash
-git clone <your-repo-url>
-cd <your-repo-name>
+git clone https://github.com/MIRUDHULA-DHANARAJ/llm-data-agent.git
+cd llm-data-agent
 pip install -r requirements.txt
 ```
 
